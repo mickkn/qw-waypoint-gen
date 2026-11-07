@@ -1,10 +1,11 @@
 """
-:File: test_integration.py
-:Details: End-to-end generation tests against real Quake BSP maps. Skipped
-          automatically when the maps are not present on this machine.
+:File:      tests/test_integration.py
 
-:Date: 2026-07-06
+:Details:   End-to-end generation tests against real Quake BSP maps. Skipped
+            automatically when the maps are not present on this machine.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

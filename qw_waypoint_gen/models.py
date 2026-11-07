@@ -1,10 +1,11 @@
 """
-:File: models.py
-:Details: Shared data models for parsed map data (entities and render
-          surfaces) used by the waypoint generation pipeline.
+:File:      models.py
 
-:Date: 2026-07-06
+:Details:   Shared data models for parsed map data (entities and render
+            surfaces) used by the waypoint generation pipeline.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

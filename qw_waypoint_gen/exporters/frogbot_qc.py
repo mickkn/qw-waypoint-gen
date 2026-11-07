@@ -5,7 +5,7 @@
             Frogbot waypoint tool dumps (manual.qc SaveMarkers), compatible with
             the mod compiler and waypoint_map_inject.py.
 
-:Date:      2026-07-06
+:Date:      2026-11-07
 :Author:    Mick K
 """
 

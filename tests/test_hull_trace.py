@@ -1,10 +1,11 @@
 """
-:File: test_hull_trace.py
-:Details: Unit tests for the Quake hull tracer using a synthetic box room
-          built directly from clipnodes.
+:File:      tests/test_hull_trace.py
 
-:Date: 2026-07-06
+:Details:   Unit tests for the Quake hull tracer using a synthetic box room
+            built directly from clipnodes.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

@@ -1,3 +1,12 @@
+"""
+:File:      parsers/entity_parser.py
+
+:Details:   Parse entity dictionaries and origins from a Quake BSP entity lump.
+
+:Date:      2026-11-07
+:Author:    Mick K
+"""
+
 from __future__ import annotations
 
 import re

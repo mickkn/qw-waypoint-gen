@@ -1,10 +1,10 @@
 """
-:File: test_ktx_exporter.py
-:Details: Unit tests for the KTX .bot exporter, checked against the command
-          grammar of KTX 1.47 LoadBotRoutingFromFile() (marker_load.c).
+:File:      tests/test_ktx_exporter.py
+:Details:   Unit tests for the KTX .bot exporter, checked against the command
+            grammar of KTX 1.47 LoadBotRoutingFromFile() (marker_load.c).
 
-:Date: 2026-11-07
-
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

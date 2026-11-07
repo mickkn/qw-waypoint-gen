@@ -1,12 +1,13 @@
 """
-:File: goals.py
-:Details: Automatic Frogbot goal numbering. Ranks important items (powerups,
-          armor, big weapons, megahealth) and assigns low goal numbers to the
-          most desirable ones, leaving the built-in defaults (G19-G24) to the
-          mod.
+:File:      nav/goals.py
 
-:Date: 2026-07-06
+:Details:   Automatic Frogbot goal numbering. Ranks important items (powerups,
+            armor, big weapons, megahealth) and assigns low goal numbers to the
+            most desirable ones, leaving the built-in defaults (G19-G24) to the
+            mod.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

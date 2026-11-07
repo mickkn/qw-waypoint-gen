@@ -1,10 +1,11 @@
 """
-:File: generator.py
-:Details: Top-level waypoint generation pipeline: BSP -> markers -> paths ->
-          zones -> goals, ready for the KTX .bot or Frogbot QC exporter.
+:File:      generator.py
 
-:Date: 2026-07-06
+:Details:   Top-level waypoint generation pipeline: BSP -> markers -> paths ->
+            zones -> goals, ready for the KTX .bot or Frogbot QC exporter.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

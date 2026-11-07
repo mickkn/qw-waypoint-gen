@@ -1,3 +1,12 @@
+"""
+:File:      geom/vector.py
+
+:Details:   Define the three-dimensional vector model and vector operations.
+
+:Date:      2026-11-07
+:Author:    Mick K
+"""
+
 from __future__ import annotations
 
 from math import sqrt

@@ -1,10 +1,11 @@
 """
-:File: cli.py
-:Details: Command line interface for generating KTX .bot route files (or
-          Frogbot map_<name>.qc files) from compiled QuakeWorld BSP29 maps.
+:File:      cli.py
 
-:Date: 2026-07-06
+:Details:   Command line interface for generating KTX .bot route files (or
+            Frogbot map_<name>.qc files) from compiled QuakeWorld BSP29 maps.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

@@ -1,11 +1,12 @@
 """
-:File: markers.py
-:Details: Frogbot marker placement. Assigns entity marker indices exactly like
-          the Frogbot QuakeC spawn functions (AddToQue order), then generates
-          ground-validated custom markers from BSP floor geometry.
+:File:      nav/markers.py
 
-:Date: 2026-07-06
+:Details:   Frogbot marker placement. Assigns entity marker indices exactly
+            like the Frogbot QuakeC spawn functions (AddToQue order), then
+            generates ground-validated custom markers from BSP floor geometry.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

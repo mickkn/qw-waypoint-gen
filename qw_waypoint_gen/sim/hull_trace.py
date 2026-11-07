@@ -1,11 +1,12 @@
 """
-:File: hull_trace.py
-:Details: Quake collision hull tracer. Ports SV_HullPointContents and
-          SV_RecursiveHullCheck so waypoint generation can do real player-hull
-          collision queries against BSP clipnodes.
+:File:      sim/hull_trace.py
 
-:Date: 2026-07-06
+:Details:   Quake collision hull tracer. Ports SV_HullPointContents and
+            SV_RecursiveHullCheck so waypoint generation can do real player-hull
+            collision queries against BSP clipnodes.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

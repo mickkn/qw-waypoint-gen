@@ -1,10 +1,11 @@
 """
-:File: checks.py
-:Details: Validation of generated waypoint graphs against Frogbot engine
-          limits, plus a human-readable summary for CLI output.
+:File:      validation/checks.py
 
-:Date: 2026-07-06
+:Details:   Validation of generated waypoint graphs against Frogbot engine
+            limits, plus a human-readable summary for CLI output.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

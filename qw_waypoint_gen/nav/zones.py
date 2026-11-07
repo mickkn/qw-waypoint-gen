@@ -1,11 +1,12 @@
 """
-:File: zones.py
-:Details: Automatic Frogbot zone assignment. Grows connected regions over the
-          path graph honoring the engine limits (24 zones, 32 markers per
-          zone) so every routable marker gets a zone.
+:File:      nav/zones.py
 
-:Date: 2026-07-06
+:Details:   Automatic Frogbot zone assignment. Grows connected regions over
+            the path graph honoring the engine limits (24 zones, 32 markers
+            per zone) so every routable marker gets a zone.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

@@ -1,11 +1,12 @@
 """
-:File: paths.py
-:Details: Builds the Frogbot path graph: classifies marker-to-marker moves
-          with the movement simulator, wires teleporters, prunes isolated
-          custom markers, and fills the 8 P-slots per marker with D flags.
+:File:      nav/paths.py
 
-:Date: 2026-07-06
+:Details:   Builds the Frogbot path graph: classifies marker-to-marker moves
+            with the movement simulator, wires teleporters, prunes isolated
+            custom markers, and fills the 8 P-slots per marker with D flags.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

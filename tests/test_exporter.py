@@ -1,10 +1,11 @@
 """
-:File: test_exporter.py
-:Details: Unit tests for the Frogbot QC exporter, including compatibility
-          with the exact regexes used by waypoint_map_inject.py.
+:File:      tests/test_exporter.py
 
-:Date: 2026-07-06
+:Details:   Unit tests for the Frogbot QC exporter, including compatibility
+            with the exact regexes used by waypoint_map_inject.py.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

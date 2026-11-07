@@ -1,10 +1,10 @@
 """
-:File: test_markers.py
-:Details: Unit tests for Frogbot entity marker numbering (AddToQue order),
-          deathmatch spawnflag filtering, and zone/goal assignment.
+:File:      tests/test_markers.py
+:Details:   Unit tests for Frogbot entity marker numbering (AddToQue order),
+            deathmatch spawnflag filtering, and zone/goal assignment.
 
-:Date: 2026-07-06
-
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

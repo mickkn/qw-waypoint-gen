@@ -1,10 +1,12 @@
 """
-:File: bsp_parser.py
-:Details: Quake BSP29 parser exposing entities, render geometry, collision hulls
-          (clipnodes), submodels, and texture names for waypoint generation.
+:File:      parsers/bsp_parser.py
 
-:Date: 2026-07-06
+:Details:   Quake BSP29 parser exposing entities, render geometry, collision
+            hulls (clipnodes), submodels, and texture names for waypoint
+            generation.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

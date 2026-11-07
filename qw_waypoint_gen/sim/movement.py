@@ -1,11 +1,12 @@
 """
-:File: movement.py
-:Details: QuakeWorld player movement simulation built on the hull tracer.
-          Provides ground snapping, step-aware walk tests, ballistic jump
-          tests, and fall classification for waypoint reachability.
+:File:      sim/movement.py
 
-:Date: 2026-07-06
+:Details:   QuakeWorld player movement simulation built on the hull tracer.
+            Provides ground snapping, step-aware walk tests, ballistic jump
+            tests, and fall classification for waypoint reachability.
 
+:Date:      2026-11-07
+:Author:    Mick K
 """
 
 from __future__ import annotations

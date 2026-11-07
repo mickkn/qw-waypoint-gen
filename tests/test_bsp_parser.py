@@ -1,3 +1,12 @@
+"""
+:File:      tests/test_bsp_parser.py
+
+:Details:   Unit tests for parsing Quake BSP29 entity and surface data.
+
+:Date:      2026-11-07
+:Author:    Mick K
+"""
+
 from __future__ import annotations
 
 import struct
