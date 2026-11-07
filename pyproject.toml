@@ -1,0 +1,88 @@
+[project]
+name = "qw-waypoint-gen"
+version = "1.1.0"
+description = "Automatic KTX (QuakeWorld) bot waypoint .bot generator from compiled BSP maps"
+requires-python = ">=3.11"
+dependencies = [
+  "typer>=0.12",
+  "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5", "mypy>=1.10"]
+
+[project.scripts]
+qw-wpgen = "qw_waypoint_gen.cli:app"
+
+[tool.ruff]
+line-length = 120
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[tool.black]
+line-length=120
+target-version = ['py314']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.venv*        # exclude virtual environments
+    | \venv*         # exclude virtual environments
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.run]
+branch = true
+omit = [
+  "tests/*",
+]
+
+[tool.isort]
+line_length = 120
+
+[tool.flake8]
+max-line-length = 120
+exclude = [
+  "*venv*/*",
+  "tests/*",
+]
+max-complexity = 10
+import-order-style = "google"
+show-source = true
+statistics = true
+docstring-convention = "google"
+ignore = [
+  "D415",   # Missing blank line after section
+  "D212",   # Multi-line docstring summary should start at the first line
+  "D202",   # No blank lines allowed after function docstring
+  "D205",   # 1 blank line required between summary line and description
+  "DCO060", # a class with attributes should have the attributes section in the docstring
+  "W503",   # Line break occurred before a binary operator
+  "U101",   # Unused variable
+  "ANN001",
+  "ANN002",
+  "ANN003",
+  "ANN101",
+  "ANN102",
+  "ANN204",
+  "ANN401",
+]
+per-file-ignores = [
+  # Ignore unused arguments fixtures in tests folder.
+  "manage.py: E402",
+]
