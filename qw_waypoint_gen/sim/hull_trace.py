@@ -87,6 +87,7 @@ class HullTracer:
         Returns:
             HullTracer: Tracer bound to the requested world hull.
         """
+        bsp.validate_collision_hulls()
         world = bsp.models()[0]
         if HULL_POINT == hull:
             return cls(bsp.hull0_clipnodes(), bsp.planes(), world.head_nodes[0])

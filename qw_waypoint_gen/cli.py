@@ -12,6 +12,9 @@ from __future__ import annotations
 
 import enum
 import json
+import os
+import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 import typer
@@ -77,7 +80,9 @@ def _settings(grid: float, link_distance: float, max_fall: float, fmt: OutputFor
     )
 
 
-def _generate_one(bsp_file: Path, out_path: Path | None, settings: GenerationSettings, fmt: OutputFormat) -> dict:
+def _generate_one(
+    bsp_file: Path, out_path: Path | None, settings: GenerationSettings, fmt: OutputFormat
+) -> dict[str, object]:
     """Generate and write waypoints for one BSP, returning its summary."""
     result = generate_waypoints(bsp_file, settings)
     target = out_path if out_path is not None else Path(default_output_name(result.map_name, fmt))
@@ -85,6 +90,26 @@ def _generate_one(bsp_file: Path, out_path: Path | None, settings: GenerationSet
     summary = summarize(result.markers, result.zone_count, result.goal_count, settings.max_markers)
     summary["output"] = str(target)
     return summary
+
+
+def _batch_generate_one(
+    bsp_file: Path, target: Path, settings: GenerationSettings, fmt: OutputFormat
+) -> dict[str, object] | str:
+    """Return a map summary or an expected, reportable generation failure."""
+    try:
+        return _generate_one(bsp_file, target, settings, fmt)
+    except (BspParseError, ZoneAssignmentError, OSError) as exc:
+        return f"failed: {exc}"
+
+
+def _report_batch_result(map_name: str, target: Path, result: dict[str, object] | str) -> str:
+    """Print one completed map's status from the main process."""
+    if isinstance(result, str):
+        typer.echo(f"{map_name}: {result}", err=True)
+        return result
+    status = "ok" if not result["problems"] else f"problems: {result['problems']}"
+    typer.echo(f"{map_name}: {result['markers_total']} markers -> {target} ({status})", err=True)
+    return status
 
 
 @app.command("generate")
@@ -112,6 +137,7 @@ def batch(
     grid: float = typer.Option(128.0, help="Floor sampling grid spacing (map units)."),
     link_distance: float = typer.Option(400.0, help="Maximum path link distance."),
     max_fall: float = typer.Option(SAFE_FALL_HEIGHT, help="Maximum fall height allowed on paths."),
+    workers: int = typer.Option(0, min=0, help="Worker processes; 0 uses CPU count minus one, 1 runs sequentially."),
 ) -> None:
     """Generate waypoint files for every .bsp in a directory.
 
@@ -120,22 +146,37 @@ def batch(
     """
     settings = _settings(grid, link_distance, max_fall, fmt)
     report: dict[str, object] = {}
+    jobs: list[tuple[Path, Path]] = []
     for bsp_file in sorted(maps_dir.glob("*.bsp")):
         map_name = bsp_file.stem.lower()
         target = out_dir / default_output_name(map_name, fmt)
+        if map_name in report:
+            raise typer.BadParameter(f"Multiple BSP files share the output name {target.name}", param_hint="maps_dir")
         if target.exists() and not overwrite:
             report[map_name] = "skipped (exists)"
             continue
-        try:
-            summary = _generate_one(bsp_file, target, settings, fmt)
-        except (BspParseError, ZoneAssignmentError, OSError) as exc:
-            report[map_name] = f"failed: {exc}"
-            typer.echo(f"{map_name}: failed: {exc}", err=True)
-            continue
-        status = "ok" if not summary["problems"] else f"problems: {summary['problems']}"
-        report[map_name] = status
-        typer.echo(f"{map_name}: {summary['markers_total']} markers -> {target} ({status})", err=True)
-    typer.echo(json.dumps(report, indent=2))
+        report[map_name] = "pending"
+        jobs.append((bsp_file, target))
+
+    worker_count = workers or max(1, (os.cpu_count() or 1) - 1)
+    if sys.platform == "win32":
+        worker_count = min(worker_count, 61)
+    worker_count = min(worker_count, len(jobs))
+    if worker_count == 1:
+        for bsp_file, target in jobs:
+            map_name = bsp_file.stem.lower()
+            result = _batch_generate_one(bsp_file, target, settings, fmt)
+            report[map_name] = _report_batch_result(map_name, target, result)
+    elif worker_count > 1:
+        with ProcessPoolExecutor(max_workers=worker_count) as executor:
+            futures = {
+                executor.submit(_batch_generate_one, bsp_file, target, settings, fmt): (bsp_file.stem.lower(), target)
+                for bsp_file, target in jobs
+            }
+            for future in as_completed(futures):
+                map_name, target = futures[future]
+                report[map_name] = _report_batch_result(map_name, target, future.result())
+    typer.echo(json.dumps(report, indent=2, sort_keys=True))
 
 
 @app.command("version")

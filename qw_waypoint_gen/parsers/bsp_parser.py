@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import math
 import struct
 from dataclasses import dataclass
 from pathlib import Path
@@ -43,6 +44,9 @@ CONTENTS_WATER = -3
 CONTENTS_SLIME = -4
 CONTENTS_LAVA = -5
 CONTENTS_SKY = -6
+_VALID_CONTENTS = frozenset(
+    (CONTENTS_EMPTY, CONTENTS_SOLID, CONTENTS_WATER, CONTENTS_SLIME, CONTENTS_LAVA, CONTENTS_SKY)
+)
 
 MAX_HULLS = 4
 
@@ -156,6 +160,7 @@ class QuakeBsp:
         self._leafs: list[BspLeaf] | None = None
         self._models: list[BspModel] | None = None
         self._hull0: list[ClipNode] | None = None
+        self._collision_validated = False
 
     @classmethod
     def load(cls, path: str | Path) -> "QuakeBsp":
@@ -364,11 +369,64 @@ class QuakeBsp:
                         children.append(child)
                     else:
                         leaf_index = -child - 1
-                        contents = leafs[leaf_index].contents if leaf_index < len(leafs) else CONTENTS_SOLID
+                        if leaf_index >= len(leafs):
+                            raise BspParseError(f"{self.path}: render node references missing leaf {leaf_index}")
+                        contents = leafs[leaf_index].contents
+                        if contents not in _VALID_CONTENTS:
+                            raise BspParseError(f"{self.path}: leaf {leaf_index} has invalid contents {contents}")
                         children.append(contents)
                 out.append(ClipNode(node.plane_num, (children[0], children[1])))
             self._hull0 = out
         return self._hull0
+
+    def validate_collision_hulls(self) -> None:
+        """Reject invalid collision references and cyclic trees before tracing."""
+        if self._collision_validated:
+            return
+        planes = self.planes()
+        for index, plane in enumerate(planes):
+            if not 0 <= plane.type_id <= 5 or not all(
+                math.isfinite(value) for value in (*plane.normal.as_tuple(), plane.dist)
+            ):
+                raise BspParseError(f"{self.path}: invalid plane {index}")
+        models = self.models()
+        if not models:
+            raise BspParseError(f"{self.path}: missing world model")
+        for name, nodes, head in (
+            ("point hull", self.hull0_clipnodes(), models[0].head_nodes[0]),
+            ("player hull", self.clipnodes(), models[0].head_nodes[1]),
+        ):
+            self._validate_hull(name, nodes, head, len(planes))
+        self._collision_validated = True
+
+    def _validate_hull(self, name: str, nodes: list[ClipNode], head: int, plane_count: int) -> None:
+        """Validate node references and detect cycles without Python recursion."""
+        if head >= len(nodes) or (head < 0 and head not in _VALID_CONTENTS):
+            raise BspParseError(f"{self.path}: {name} has invalid root {head} ({len(nodes)} nodes)")
+        for index, node in enumerate(nodes):
+            if not 0 <= node.plane_num < plane_count:
+                raise BspParseError(
+                    f"{self.path}: {name} node {index} references plane {node.plane_num} ({plane_count} planes)"
+                )
+            for child in node.children:
+                if child >= len(nodes) or (child < 0 and child not in _VALID_CONTENTS):
+                    raise BspParseError(f"{self.path}: {name} node {index} has invalid child {child}")
+
+        states = bytearray(len(nodes))
+        for root in range(len(nodes)):
+            if states[root]:
+                continue
+            stack = [(root, False)]
+            while stack:
+                index, exiting = stack.pop()
+                if exiting:
+                    states[index] = 2
+                elif states[index] == 1:
+                    raise BspParseError(f"{self.path}: {name} contains a cycle at node {index}")
+                elif states[index] == 0:
+                    states[index] = 1
+                    stack.append((index, True))
+                    stack.extend((child, False) for child in nodes[index].children if child >= 0)
 
     def surfaces(self, model_index: int | None = 0) -> list[Surface]:
         """Build render face polygons, optionally restricted to one submodel.

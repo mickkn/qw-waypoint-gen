@@ -55,6 +55,16 @@ such as the hand-made ones KTX ships, are kept unless you pass `--overwrite`:
 qw-wpgen batch /path/to/qw/maps --out-dir /path/to/qw/ktx/bots/maps
 ```
 
+Batch generation runs independent maps in worker processes to use multiple CPU cores.
+Use `--workers 4` to limit concurrency, or `--workers 1` for sequential generation.
+The default, `--workers 0`, uses CPU count minus one (at least one worker, up to
+61 on Windows), limited to the number of maps needing generation. This leaves
+some CPU capacity for other work. Each worker loads its own map,
+so reduce the worker count if memory usage is too high.
+Progress is printed as maps finish; the final JSON report is sorted by map name.
+Invalid collision-hull references or cycles are reported as map failures, and
+the remaining maps continue.
+
 Options:
 
 | Option            | Default | Meaning                                       |
@@ -63,6 +73,7 @@ Options:
 | `--grid`          | 128     | Floor sampling grid spacing (map units)       |
 | `--link-distance` | 400     | Maximum straight-line path link distance      |
 | `--max-fall`      | ~264    | Maximum fall height allowed on paths          |
+| `--workers`       | 0       | Batch only: process count; 0 = automatic, 1 = sequential |
 
 `generate` prints a JSON summary (marker/path/zone/goal counts, unreachable items,
 constraint violations) and exits nonzero if any hard engine limit is violated.
